@@ -45,7 +45,7 @@ jsql/
 
 ### GitHub Repository
 
-[https://github.com/AbhinavTheDev/jsql](https://github.com/AbhinavTheDev/jsquel)
+[https://github.com/AbhinavTheDev/jsquel](https://github.com/AbhinavTheDev/jsquel)
 
 ### Example Usage
 

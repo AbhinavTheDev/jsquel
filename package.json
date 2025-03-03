@@ -1,6 +1,6 @@
 {
   "name": "jsquel",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A light-weight file based, SQL database implemented using js",
   "type": "module",
   "main": "index.js",
