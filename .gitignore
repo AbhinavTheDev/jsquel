@@ -22,3 +22,7 @@ backup/
 logs/
 example.txt
 Tutorial.md
+
+# docs cache and dist
+docs/.vitepress/dist
+docs/.vitepress/cache
