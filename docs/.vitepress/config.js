@@ -6,7 +6,7 @@ export default defineConfig({
   title: "JSQUEL",
   description: "A lightweight file based, SQL database implemented using js",
   head: [
-    ['link', { rel: 'icon', href: '/favicon.ico' }]
+    ['link', { rel: 'icon', href: '/jsquel/favicon.ico' }]
   ],
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
