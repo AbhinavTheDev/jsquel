@@ -2,6 +2,7 @@ import { defineConfig } from 'vitepress'
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
+  base: '/jsquel/',
   title: "JSQUEL",
   description: "A lightweight file based, SQL database implemented using js",
   head: [
