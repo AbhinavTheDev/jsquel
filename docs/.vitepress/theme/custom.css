@@ -1,5 +1,255 @@
+/* ==========================================================================
+   Typography & Font Faces
+   ========================================================================== */
+
+@font-face {
+  font-family: "Google Sans";
+  src: url("./fonts/GoogleSans-Regular.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Google Sans";
+  src: url("./fonts/GoogleSans-Bold.woff") format("woff");
+  font-weight: 600 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Ioskeley Mono";
+  src: url("./fonts/IoskeleyMono-Regular.woff2") format("woff2");
+  font-weight: 400 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ==========================================================================
+   Design Tokens & Variables (Bound to DESIGN.md)
+   ========================================================================== */
+
 :root {
-  /* Adjust the maximum width of the hero image (Default is often around 320px) */
-  --vp-home-hero-image-background-image: linear-gradient(-45deg, #8BA9EF 50%, #FBBB0B 50%);
-  --vp-home-hero-image-filter: blur(56px);
+  --vp-font-family-base: "Google Sans", "Inter", ui-sans-serif, system-ui, sans-serif,
+    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --vp-font-family-mono: "Ioskeley Mono", ui-monospace, "Menlo", "Monaco", "Consolas",
+    "Liberation Mono", "Courier New", monospace;
+
+  /* Brand color tokens matching DESIGN.md */
+  --vp-c-brand-1: #3b82f6;
+  --vp-c-brand-2: #2563eb;
+  --vp-c-brand-3: #1d4ed8;
+  --vp-c-brand-soft: rgba(59, 130, 246, 0.14);
+
+  /* Subtle atmospheric hero lighting */
+  --vp-home-hero-image-background-image: radial-gradient(circle at center, rgba(251, 187, 11, 0.28) 0%, rgba(139, 169, 239, 0.18) 45%, transparent 70%);
+  --vp-home-hero-image-filter: blur(48px);
+}
+
+/* Selection and focus styling */
+::selection {
+  background-color: var(--vp-c-brand-soft);
+  color: var(--vp-c-brand-1);
+}
+
+:focus-visible {
+  outline: 2px solid var(--vp-c-brand-1);
+  outline-offset: 2px;
+}
+
+/* ==========================================================================
+   Content Measure & Typography Rhythm
+   ========================================================================== */
+
+.vp-doc p,
+.vp-doc ul,
+.vp-doc ol {
+  max-width: 72ch;
+  line-height: 1.65;
+}
+
+.vp-doc h1 {
+  letter-spacing: -0.02em;
+}
+
+.vp-doc h2 {
+  letter-spacing: -0.015em;
+}
+
+/* Code block typography and wrapping */
+.vp-doc div[class*="language-"] pre {
+  font-family: var(--vp-font-family-mono);
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+/* Feature card icon container consistency */
+.VPHomeFeatures .VPFeature .icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  background-color: var(--vp-c-bg-soft);
+  border: 1px solid var(--vp-c-divider);
+}
+
+.VPHomeFeatures .VPFeature .icon img,
+.VPHomeFeatures .VPFeature .icon svg {
+  width: 24px;
+  height: 24px;
+}
+
+/* ==========================================================================
+   Home Showcase Layout
+   ========================================================================== */
+
+.home-showcase {
+  max-width: 1152px;
+  margin: 64px auto 80px;
+  padding: 0 24px;
+}
+
+.home-section-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.home-section-header h2 {
+  font-family: var(--vp-font-family-base);
+  font-size: 28px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--vp-c-text-1);
+  margin: 0 0 10px;
+  border-top: none;
+  padding-top: 0;
+}
+
+.home-section-header p {
+  font-size: 16px;
+  color: var(--vp-c-text-2);
+  max-width: 620px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+.showcase-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 24px;
+  margin-bottom: 48px;
+}
+
+.showcase-card {
+  background: var(--vp-c-bg-soft);
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 12px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.showcase-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 18px;
+  background: var(--vp-c-bg-mute);
+  border-bottom: 1px solid var(--vp-c-divider);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--vp-c-text-2);
+  font-family: var(--vp-font-family-mono);
+}
+
+.showcase-card-body {
+  padding: 16px;
+  flex: 1;
+}
+
+.showcase-card-body div[class*="language-"] {
+  margin: 0 !important;
+  border-radius: 8px;
+}
+
+/* Quick Installation Bar */
+.install-widget {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 580px;
+  margin: 0 auto 56px;
+  padding: 12px 20px;
+  background: var(--vp-c-bg-soft);
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 9999px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+.install-code {
+  font-family: var(--vp-font-family-mono);
+  font-size: 14px;
+  color: var(--vp-c-text-1);
+}
+
+.prompt {
+  color: var(--vp-c-brand-1);
+  margin-right: 8px;
+  user-select: none;
+}
+
+.copy-btn {
+  color: white;
+}
+
+/* Quick Navigation Journey Cards */
+.journey-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 20px;
+}
+
+.journey-card {
+  display: block;
+  text-decoration: none !important;
+  padding: 24px;
+  background: var(--vp-c-bg-soft);
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 12px;
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.journey-card:hover {
+  border-color: var(--vp-c-brand-1);
+  transform: translateY(-2px);
+}
+
+.journey-card-tag {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--vp-c-brand-1);
+  margin-bottom: 8px;
+}
+
+.journey-card h3 {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--vp-c-text-1);
+  margin: 0 0 8px;
+  border-top: none;
+  padding-top: 0;
+}
+
+.journey-card p {
+  font-size: 14px;
+  color: var(--vp-c-text-2);
+  margin: 0;
+  line-height: 1.5;
 }

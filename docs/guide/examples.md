@@ -1,114 +1,160 @@
 # Examples
 
-This page shows a few common usage examples for `jsquel`.
+This page demonstrates common usage patterns for `jsquel`, from basic schema creation and record insertion to indexing, concurrency control, and database snapshots.
 
-## Create a table
+
+## 1. Creating a Table
+
+Define a table schema by specifying column names and types (`INT`, `TXT`, `BOOLEAN`):
 
 ```js
 import { createTable } from "jsquel";
 
-createTable("CREATE TABLE products (id int, name txt, quantity int)");
+createTable("CREATE TABLE products (id int, name txt, quantity int, in_stock boolean)");
 ```
 
-This creates a table named products with three columns:
+This creates:
+- `products.schema.json` with the column definitions.
+- `products.data.json` initialized as an empty collection `[]`.
 
-- `id` as integer
-- `name` as text
-- `quantity` as integer
 
-## Insert rows
+## 2. Inserting Records
+
+Insert rows using standard SQL `INSERT INTO` syntax:
 
 ```js
 import { insertInto } from "jsquel";
 
-insertInto("INSERT INTO products (id, name, quantity) VALUES (101, 'Apple', 10)");
-insertInto("INSERT INTO products (id, name, quantity) VALUES (102, 'Banana', 15)");
-insertInto("INSERT INTO products (id, name, quantity) VALUES (103, 'Orange', 20)");
+insertInto(
+  'INSERT INTO products (id, name, quantity, in_stock) VALUES (101, "Apple", 50, true)'
+);
+
+insertInto(
+  'INSERT INTO products (id, name, quantity, in_stock) VALUES (102, "Banana", 85, true)'
+);
+
+insertInto(
+  'INSERT INTO products (id, name, quantity, in_stock) VALUES (103, "Orange", 0, false)'
+);
 ```
 
-## Read rows
+> **Note**: Integer columns are automatically parsed into numeric values, and quotes surrounding string literals are stripped before saving to disk.
+
+
+## 3. Querying Records
+
+Display records from a table using `select`:
 
 ```js
-import { selectFrom } from "jsquel";
+import { select } from "jsquel";
 
-const rows = selectFrom("SELECT * FROM products");
-console.log(rows);
+// Query all columns
+select("SELECT * FROM products");
+
+// Query specific columns
+select("SELECT id, name FROM products");
+```
+
+
+## 4. Indexing for Fast Lookups
+
+For tables containing many rows, create an index on frequently queried columns to avoid full table scans:
+
+```js
+import { createIndex, searchWithIndex } from "jsquel";
+
+// 1. Build an index on the "name" column
+createIndex("products", "name");
+
+// 2. Perform an O(1) indexed lookup
+const items = searchWithIndex("products", "name", "Banana");
+console.log(items);
 ```
 
 Output:
 
-```
+```json
 [
-  { id: 101, name: "Apple", quantity: 10 },
-  { id: 102, name: "Banana", quantity: 15 },
-  { id: 103, name: "Orange", quantity: 20 }
+  {
+    "id": 102,
+    "name": "Banana",
+    "quantity": 85,
+    "in_stock": true
+  }
 ]
 ```
 
-## Filter results
+
+## 5. Concurrent Writes with Table Locks
+
+In serverless handlers or asynchronous event loops, multiple operations writing to the same table simultaneously could cause race conditions. Use `performWithLock` to serialize writes safely:
 
 ```js
-import { selectFrom } from "jsquel";
+import { performWithLock, insertInto } from "jsquel";
 
-const filtered = selectFrom("SELECT * FROM products WHERE quantity > 12");
-console.log(filtered);
+async function addProductConcurrently(id, name, quantity) {
+  await performWithLock("products", async () => {
+    insertInto(
+      `INSERT INTO products (id, name, quantity, in_stock) VALUES (${id}, "${name}", ${quantity}, true)`
+    );
+  });
+}
+
+// Safely execute concurrent operations
+await Promise.all([
+  addProductConcurrently(104, "Mango", 40),
+  addProductConcurrently(105, "Pineapple", 25)
+]);
 ```
 
-Output:
+
+## 6. Backing Up and Restoring the Database
+
+Create point-in-time snapshots of all tables and schemas, or restore a prior backup:
 
 ```js
-[
-  { id: 102, name: "Banana", quantity: 15 },
-  { id: 103, name: "Orange", quantity: 20 }
-]
+import { backupDatabase, restoreDatabase } from "jsquel";
+
+// Create a snapshot in the ./backups directory
+backupDatabase("./backups/weekly_snapshot");
+
+// Restore from a snapshot directory
+restoreDatabase("./backups/weekly_snapshot");
 ```
 
-## Update a row
 
-```js
-import { updateTable } from "jsquel";
+## 7. Full End-to-End Workflow
 
-updateTable("UPDATE products SET quantity = 25 WHERE name = 'Apple'");
-```
-
-## Delete a row
-
-```js
-import { deleteFrom } from "jsquel";
-
-deleteFrom("DELETE FROM products WHERE id = 103");
-```
-
-## Full example
+A complete script assembling schema definition, data population, indexing, and backup:
 
 ```js
 import {
   createTable,
   insertInto,
-  selectFrom,
-  updateTable,
-  deleteFrom
+  select,
+  createIndex,
+  searchWithIndex,
+  backupDatabase
 } from "jsquel";
 
-createTable("CREATE TABLE users (id int, name txt, age int)");
+// Step 1: Initialize schema
+createTable("CREATE TABLE employees (id int, name txt, department txt, active boolean)");
 
-insertInto("INSERT INTO users (id, name, age) VALUES (1, 'Alice', 26)");
-insertInto("INSERT INTO users (id, name, age) VALUES (2, 'Bob', 31)");
+// Step 2: Insert employees
+insertInto('INSERT INTO employees (id, name, department, active) VALUES (1, "Sarah", "Engineering", true)');
+insertInto('INSERT INTO employees (id, name, department, active) VALUES (2, "Michael", "Design", true)');
+insertInto('INSERT INTO employees (id, name, department, active) VALUES (3, "Elena", "Engineering", false)');
 
-const allUsers = selectFrom("SELECT * FROM users");
-console.log(allUsers);
+// Step 3: Print records
+select("SELECT * FROM employees");
 
-updateTable("UPDATE users SET age = 30 WHERE name = 'Alice'");
+// Step 4: Index the department column
+createIndex("employees", "department");
 
-const adults = selectFrom("SELECT * FROM users WHERE age >= 30");
-console.log(adults);
+// Step 5: Lookup via index
+const engineers = searchWithIndex("employees", "department", "Engineering");
+console.log("Engineers found:", engineers);
 
-deleteFrom("DELETE FROM users WHERE id = 2");
+// Step 6: Create backup snapshot
+backupDatabase("./backups/employees_init");
 ```
-
-## Notes
-- jsquel uses SQL-like statements for creating, reading, updating, and deleting data.
-- The database is file-based and stores data in local files.
-- Use a .env file with MINI_SQL_DB_PATH to define your database storage path.
-
-> For more details, see the [Getting Started](./) page.
