@@ -1,8 +1,110 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
+import { useData, withBase } from 'vitepress'
+
+const { lang, localeIndex } = useData()
+
+const isHindi = computed(() => {
+  return localeIndex.value === 'hi' || (lang.value && lang.value.startsWith('hi'))
+})
 
 const copied = ref(false)
-const activeTab = ref('query')
+const activeTab = ref('data')
+
+const content = {
+  en: {
+    copy: 'Copy',
+    copied: 'Copied!',
+    copyTitle: 'Copy command',
+    section1Title: 'Transparent Persistence by Design',
+    section1Subtitle:
+      'Write declarative SQL statements directly in Node.js. Every table, schema, and index persists in clean, human-readable JSON files on your disk.',
+    comment1: '// 1. Define table schema',
+    comment2: '// 2. Insert records',
+    comment3: '// 3. Query all rows',
+    comment4: '// 4. Build index for fast lookup',
+    section2Title: 'Explore the Documentation',
+    section2Subtitle:
+      'Everything you need to integrate, scale, and understand JSQUEL.',
+    cards: [
+      {
+        badge: 'ONBOARDING',
+        title: 'Quick Start Guide',
+        description:
+          'Install JSQUEL and execute your first table schema and query in under 60 seconds.',
+        link: '/quickstart'
+      },
+      {
+        badge: 'COOKBOOK',
+        title: 'Examples',
+        description:
+          'Hands-on recipes for table creation, inserts, indexing lookups, and backups.',
+        link: '/guide/examples'
+      },
+      {
+        badge: 'DEEP DIVE',
+        title: 'Architecture',
+        description:
+          'Learn how file-based JSON storage, table Mutex locks, and serverless runtimes work.',
+        link: '/guide/architecture'
+      },
+      {
+        badge: 'REFERENCE',
+        title: 'API Specifications',
+        description:
+          'Complete parameter tables, return models, error codes, and low-level utilities.',
+        link: '/api'
+      }
+    ]
+  },
+  hi: {
+    copy: 'कॉपी करें',
+    copied: 'कॉपी हो गया!',
+    copyTitle: 'कमांड कॉपी करें',
+    section1Title: 'डिज़ाइन से ही पारदर्शी दृढ़ता',
+    section1Subtitle:
+      'Node.js में सीधे डिक्लेरेटिव SQL स्टेटमेंट्स लिखें। प्रत्येक टेबल, स्कीमा और इंडेक्स आपकी डिस्क पर साफ़, आसानी से पढ़ी जा सकने वाली JSON फ़ाइलों में संग्रहीत रहते हैं।',
+    comment1: '// 1. टेबल स्कीमा परिभाषित करें',
+    comment2: '// 2. रिकॉर्ड्स डालें (Insert records)',
+    comment3: '// 3. सभी पंक्तियाँ क्वेरी करें',
+    comment4: '// 4. तेज़ लुकअप के लिए इंडेक्स बनाएं',
+    section2Title: 'दस्तावेज़ एक्सप्लोर करें',
+    section2Subtitle:
+      'JSQUEL को एकीकृत करने, स्केल करने और समझने के लिए आवश्यक सब कुछ।',
+    cards: [
+      {
+        badge: 'शुरुआत',
+        title: 'त्वरित शुरुआत गाइड',
+        description:
+          'JSQUEL इंस्टॉल करें और 60 सेकंड से भी कम समय में अपना पहला टेबल स्कीमा और क्वेरी निष्पादित करें।',
+        link: '/hi/quickstart'
+      },
+      {
+        badge: 'कुकबुक',
+        title: 'उदाहरण',
+        description:
+          'टेबल निर्माण, इंसर्ट, इंडेक्सिंग लुकअप और बैकअप के लिए व्यावहारिक उदाहरण।',
+        link: '/hi/guide/examples'
+      },
+      {
+        badge: 'डीप डाइव',
+        title: 'आर्किटेक्चर',
+        description:
+          'जानें कि फ़ाइल-आधारित JSON स्टोरेज, टेबल म्यूटिक्स (Mutex) लॉक्स और सर्वरलेस रनटाइम कैसे काम करते हैं।',
+        link: '/hi/guide/architecture'
+      },
+      {
+        badge: 'संदर्भ',
+        title: 'एपीआई विनिर्देश',
+        description:
+          'संपूर्ण पैरामीटर तालिकाएँ, रिटर्न मॉडल्स, एरर कोड्स और निम्न-स्तरीय उपयोगिताएँ।',
+        link: '/hi/api'
+      }
+    ]
+  }
+}
+
+const t = computed(() => (isHindi.value ? content.hi : content.en))
 
 function copyInstall() {
   navigator.clipboard.writeText('npm install jsquel')
@@ -22,7 +124,7 @@ function copyInstall() {
         <span class="prompt">$</span>
         <code>npm install jsquel</code>
       </div>
-      <button class="copy-btn" @click="copyInstall" :title="copied ? 'Copied!' : 'Copy command'">
+      <button class="copy-btn" @click="copyInstall" :title="copied ? t.copied : t.copyTitle">
         <svg v-if="!copied" class="copy-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <rect width="14" height="14" x="8" y="8" rx="2" ry="2"/>
           <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
@@ -30,15 +132,15 @@ function copyInstall() {
         <svg v-else class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <polyline points="20 6 9 17 4 12"/>
         </svg>
-        <span>{{ copied ? 'Copied!' : 'Copy' }}</span>
+        <span>{{ copied ? t.copied : t.copy }}</span>
       </button>
     </div>
 
     <!-- Section 1: Interactive Code Showcase -->
     <div class="section-header">
-      <h2 class="section-title">Transparent Persistence by Design</h2>
+      <h2 class="section-title">{{ t.section1Title }}</h2>
       <p class="section-subtitle">
-        Write declarative SQL statements directly in Node.js. Every table, schema, and index persists in clean, human-readable JSON files on your disk.
+        {{ t.section1Subtitle }}
       </p>
     </div>
 
@@ -59,17 +161,17 @@ function copyInstall() {
         <div class="window-body">
           <pre><code><span class="token-kw">import</span> { createTable, insertInto, select, createIndex } <span class="token-kw">from</span> <span class="token-str">"jsquel"</span>;
 
-<span class="token-comment">// 1. Define table schema</span>
+<span class="token-comment">{{ t.comment1 }}</span>
 <span class="token-fn">createTable</span>(<span class="token-str">"CREATE TABLE users (id int, name txt, active boolean)"</span>);
 
-<span class="token-comment">// 2. Insert records</span>
+<span class="token-comment">{{ t.comment2 }}</span>
 <span class="token-fn">insertInto</span>(<span class="token-str">'INSERT INTO users (id, name, active) VALUES (1, "Alice", true)'</span>);
 <span class="token-fn">insertInto</span>(<span class="token-str">'INSERT INTO users (id, name, active) VALUES (2, "Bob", true)'</span>);
 
-<span class="token-comment">// 3. Query all rows</span>
+<span class="token-comment">{{ t.comment3 }}</span>
 <span class="token-fn">select</span>(<span class="token-str">"SELECT * FROM users"</span>);
 
-<span class="token-comment">// 4. Build index for fast lookup</span>
+<span class="token-comment">{{ t.comment4 }}</span>
 <span class="token-fn">createIndex</span>(<span class="token-str">"users"</span>, <span class="token-str">"name"</span>);</code></pre>
         </div>
       </div>
@@ -136,38 +238,23 @@ function copyInstall() {
 
     <!-- Section 2: Journey Navigation Cards -->
     <div class="section-header" style="margin-top: 72px;">
-      <h2 class="section-title">Explore the Documentation</h2>
+      <h2 class="section-title">{{ t.section2Title }}</h2>
       <p class="section-subtitle">
-        Everything you need to integrate, scale, and understand JSQUEL.
+        {{ t.section2Subtitle }}
       </p>
     </div>
 
     <div class="journey-grid">
-      
-      <a href="/jsquel/quickstart" class="journey-card">
-        <span class="card-badge">ONBOARDING</span>
-        <h3 class="card-title">Quick Start Guide</h3>
-        <p class="card-description">Install JSQUEL and execute your first table schema and query in under 60 seconds.</p>
+      <a 
+        v-for="(card, index) in t.cards" 
+        :key="index" 
+        :href="withBase(card.link)" 
+        class="journey-card"
+      >
+        <span class="card-badge">{{ card.badge }}</span>
+        <h3 class="card-title">{{ card.title }}</h3>
+        <p class="card-description">{{ card.description }}</p>
       </a>
-
-      <a href="/jsquel/guide/examples" class="journey-card">
-        <span class="card-badge">COOKBOOK</span>
-        <h3 class="card-title">Examples</h3>
-        <p class="card-description">Hands-on recipes for table creation, inserts, indexing lookups, and backups.</p>
-      </a>
-
-      <a href="/jsquel/guide/architecture" class="journey-card">
-        <span class="card-badge">DEEP DIVE</span>
-        <h3 class="card-title">Architecture</h3>
-        <p class="card-description">Learn how file-based JSON storage, table Mutex locks, and serverless runtimes work.</p>
-      </a>
-
-      <a href="/jsquel/api" class="journey-card">
-        <span class="card-badge">REFERENCE</span>
-        <h3 class="card-title">API Specifications</h3>
-        <p class="card-description">Complete parameter tables, return models, error codes, and low-level utilities.</p>
-       </a>
-
     </div>
 
   </div>

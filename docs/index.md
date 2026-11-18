@@ -1,14 +1,17 @@
 ---
 # https://vitepress.dev/reference/default-theme-home-page
 layout: home
+title: JSQUEL - Lightweight JavaScript SQL Database (JS SQL)
+titleTemplate: false
+description: JSQUEL is a lightweight, zero-dependency, file-based SQL database engine built in pure JavaScript (JS SQL) for Node.js. Run SQLite-compatible queries directly on JSON files.
 
 hero:
   name: "JSQUEL"
-  text: "A lightweight SQL engine with file-based storage."
-  tagline: "A SQL engine, built for JavaScript."
+  text: "Lightweight JavaScript SQL Database"
+  tagline: "A zero-dependency JS SQL database engine with human-readable JSON storage for Node.js."
   image:
     src: /hero-image.png
-    alt: "3D database storage cylinders with JavaScript badge"
+    alt: "JSQUEL - JavaScript SQL Database cylinders and badge"
   actions:
     - theme: brand
       text: Quickstart

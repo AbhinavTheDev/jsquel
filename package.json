@@ -10,10 +10,22 @@
     "docs:build": "vitepress build docs",
     "docs:preview": "vitepress preview docs"
   },
+  "homepage": "https://abhinavthedev.github.io/jsquel/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/abhinavthedev/jsquel.git"
+  },
   "keywords": [
-    "SQL",
-    "NodeJS",
-    "DB"
+    "jsquel",
+    "js sql",
+    "sql",
+    "javascript-sql",
+    "nodejs",
+    "node-sql",
+    "database",
+    "file-based-database",
+    "sqlite-alternative",
+    "json-database"
   ],
   "author": "AbhinavTheDev",
   "license": "MIT",

@@ -39,6 +39,10 @@ jsql/
 
 - Run `node test/test_db.js` # This is the test file of all library functions
 
+### Documentation
+
+Official documentation and interactive guides: [https://abhinavthedev.github.io/jsquel/](https://abhinavthedev.github.io/jsquel/)
+
 ### Published on NPM
 
 [https://www.npmjs.com/package/jsquel](https://www.npmjs.com/package/jsquel)

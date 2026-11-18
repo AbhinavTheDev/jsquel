@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://abhinavthedev.github.io/jsquel/sitemap.xml
